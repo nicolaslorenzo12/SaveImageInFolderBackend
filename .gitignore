@@ -1,0 +1,107 @@
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# .NET Core
+*.swp
+**/bin/
+**/obj/
+
+# Visual Studio files
+*.vscode
+*.vs
+
+# Packages
+*.nupkg
+*.pfx
+*.snk
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NUnit
+*.nunit
+*.VisualState.xml
+TestResult.xml
+
+# Coverlet
+coverage/
+
+# OpenCover
+OpenCover/
+
+# Reports
+*.reportgenerator.cs
+
+# Azure Pipelines
+azure-pipelines.yml
+
+# TeamCity
+/.teamcity/
+
+# DotCover
+*.dotCover
+
+# NCrunch
+*.ncrunch*
+.*crunch*.local.xml
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+
+# Mono-specific files
+mono_crash.*
+
+# Xamarin-specific files
+*.apk
+*.ap_
+*.aab
+*.dmg
+*.dsym
+*.dylib
+*.pdb
+*.xcappdata
+*.xcarchive
+*.ipa
+*.xcresult
+*.xctestrun
+
+# Flutter/Dart/Pub related
+**/android/**
+**/ios/**
+**/build/**
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/Runner/GeneratedPluginRegistrant.*
+
+# CocoaPods
+Pods/
+*/Pods/
+**/*.xcodeproj/
+*.lock
+DerivedData/
+.idea/
+.vscode/

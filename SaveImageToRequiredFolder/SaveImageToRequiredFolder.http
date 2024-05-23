@@ -1,0 +1,6 @@
+@SaveImageToRequiredFolder_HostAddress = http://localhost:5011
+
+GET {{SaveImageToRequiredFolder_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
