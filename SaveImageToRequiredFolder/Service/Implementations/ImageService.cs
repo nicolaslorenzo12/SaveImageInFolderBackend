@@ -22,15 +22,14 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             byte[] imageData = Convert.FromBase64String(addImageDto.imageData);
             string baseDirectory = @"C:\mypictures";
 
-            await checkIfDirectoryExistsAndIfNotCreateIt(baseDirectory);
-            // Combine the base directory with the folder name
+            await CheckIfDirectoryExistsAndIfNotCreateIt(baseDirectory);
             string folderPath = Path.Combine(baseDirectory, addImageDto.folderName);
 
-            await checkIfDirectoryExistsAndIfNotCreateIt(folderPath);
-            await giveProperFileNameToImage(addImageDto, folderPath, fileName, imageData);
+            await CheckIfDirectoryExistsAndIfNotCreateIt(folderPath);
+            await GiveProperFileNameToImage(addImageDto, folderPath, fileName, imageData);
         }
 
-        private async Task checkIfDirectoryExistsAndIfNotCreateIt(string folderPath)
+        private async Task CheckIfDirectoryExistsAndIfNotCreateIt(string folderPath)
         {
             if (!Directory.Exists(folderPath))
             {
@@ -38,54 +37,63 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             }
         }
 
-        private async Task giveProperFileNameToImage(AddImageDto addImageDto, string folderPath, string fileName, byte[] imageData)
+        private async Task GiveProperFileNameToImage(AddImageDto addImageDto, string folderPath, string fileName, byte[] imageData)
         {
             if (string.IsNullOrEmpty(addImageDto.fileName))
             {
-                await giveNameToImageByCounting(folderPath, fileName, imageData);
+                await GiveNameToImageByCounting(folderPath, fileName, imageData);
             }
             else
             {
-                await giveGivenNameToImage(folderPath, fileName, imageData, addImageDto);
+                await GiveGivenNameToImage(folderPath, fileName, imageData, addImageDto);
             }
         }
 
-        private async Task setFinalNameToImageAndPutItInFolder(string folderPath, string fileName, byte[] imageData)
+        private async Task SetFinalNameToImageAndPutItInFolder(string folderPath, string fileName, byte[] imageData)
         {
             string imagePath = Path.Combine(folderPath, fileName);
             await System.IO.File.WriteAllBytesAsync(imagePath, imageData);
 
             try
             {
-                var existingFolder = await context.Folders.FirstOrDefaultAsync(f => f.name == folderPath);
+                Folder existingFolder = await context.Folders.FirstOrDefaultAsync(f => f.name == folderPath);
 
-                if (existingFolder == null)
-                {
-                    var newFolder = new Models.Folder(folderPath);
-                    context.Folders.Add(newFolder);
-                }
-                await context.SaveChangesAsync();
+               await AddFolderIfItDoesNotExist(existingFolder, folderPath);
 
-                // Now get the folder ID (whether it was just added or already existed)
                 int folderId = (int)await context.Folders.Where(f => f.name == folderPath).Select(f => (int?)f.id).FirstOrDefaultAsync();
                 bool existingFile= await context.Files.AnyAsync(f => f.name == fileName && f.folderId == folderId);
 
-                // Add the file to the database
-                if (!existingFile)
-                {
-                    var newFile = new Models.File(fileName, folderId);
-                    context.Files.Add(newFile);
-                }
-                await context.SaveChangesAsync(); // Save changes for file addition
+                AddFileIfItDoesNotExist(existingFile, fileName, folderId);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                // Handle the exception appropriately
+                // I have to hand exceptions better
             }
         }
 
-        private async Task giveNameToImageByCounting(string folderPath, string fileName, byte[] imageData)
+        private async Task AddFolderIfItDoesNotExist(Folder existingFolder, string folderPath)
+        {
+            if (existingFolder == null)
+            {
+                Folder newFolder = new Models.Folder(folderPath);
+                context.Folders.Add(newFolder);
+                await context.SaveChangesAsync();
+            }           
+        }
+
+        private async Task AddFileIfItDoesNotExist(bool existingFile, string fileName, int folderId)
+        {
+            if (!existingFile)
+            {
+                var newFile = new Models.File(fileName, folderId);
+                context.Files.Add(newFile);
+                await context.SaveChangesAsync();
+            }            
+
+        }
+
+        private async Task GiveNameToImageByCounting(string folderPath, string fileName, byte[] imageData)
         {
             int maxNumber = 0;
 
@@ -111,16 +119,16 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             // Set the fileName to picture(number + 1).jpg
             fileName = $"picture({maxNumber + 1}).jpg";
 
-            await setFinalNameToImageAndPutItInFolder(folderPath, fileName, imageData);
+            await SetFinalNameToImageAndPutItInFolder(folderPath, fileName, imageData);
         }
 
-        private async Task giveGivenNameToImage(string folderPath, string fileName, byte[] imageData, AddImageDto addImageDto)
+        private async Task GiveGivenNameToImage(string folderPath, string fileName, byte[] imageData, AddImageDto addImageDto)
         {
             if (!addImageDto.fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
             {
                 fileName += addImageDto.fileName + ".jpg";
             }
-            await setFinalNameToImageAndPutItInFolder(folderPath, fileName, imageData);
+            await SetFinalNameToImageAndPutItInFolder(folderPath, fileName, imageData);
         }
     }
 }
