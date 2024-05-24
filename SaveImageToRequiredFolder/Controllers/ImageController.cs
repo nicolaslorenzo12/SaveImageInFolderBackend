@@ -9,9 +9,9 @@ namespace SaveImageToRequiredFolder.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        private readonly IImageServiceInterface imageService;
+        private readonly IImageService imageService;
 
-        public ImageController(IImageServiceInterface imageService)
+        public ImageController(IImageService imageService)
         {
             this.imageService = imageService;
         }

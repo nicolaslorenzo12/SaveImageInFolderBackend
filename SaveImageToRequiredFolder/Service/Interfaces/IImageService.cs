@@ -1,9 +1,8 @@
 ﻿using SaveImageToRequiredFolder.Dto;
-using SaveImageToRequiredFolder.Models;
 
 namespace SaveImageToRequiredFolder.Service.Interfaces
 {
-    public interface IImageServiceInterface
+    public interface IImageService
     {
         Task AddImage(AddImageDto addImageDto);
     }

@@ -6,6 +6,8 @@ namespace SaveImageToRequiredFolder.Data
     {
         public Context(DbContextOptions<Context> options) : base(options) { }
 
-        public DbSet<Image> Images { get; set; }    
+        public DbSet<Models.File> Files { get; set; } 
+        public DbSet<Folder> Folders { get; set; }
+
     }
 }

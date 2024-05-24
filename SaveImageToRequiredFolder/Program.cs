@@ -18,7 +18,7 @@ builder.Services.AddDbContext<Context>(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<IImageServiceInterface, ImageServiceImplementation>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 var app = builder.Build();
 
