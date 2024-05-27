@@ -18,6 +18,7 @@ builder.Services.AddDbContext<Context>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IFolderService, FolderService>();
 
 //builder.Services.AddCors(options =>
 //{
