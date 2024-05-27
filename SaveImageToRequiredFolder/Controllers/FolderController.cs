@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SaveImageToRequiredFolder.Dto;
 using SaveImageToRequiredFolder.Models;
-using SaveImageToRequiredFolder.Service.Implementations;
 using SaveImageToRequiredFolder.Service.Interfaces;
 
 namespace SaveImageToRequiredFolder.Controllers
