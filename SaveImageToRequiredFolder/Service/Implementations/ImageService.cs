@@ -4,12 +4,11 @@ namespace SaveImageToRequiredFolder.Service.Implementations
 {
     public class ImageService : IImageService
     {
-
         public ImageService()
         {
         }
 
-        public async Task AddImage(AddImageDto addImageDto)
+        public void AddImage(AddImageDto addImageDto)
         {
             string fileName = null;
             byte[] imageData = Convert.FromBase64String(addImageDto.imageData);

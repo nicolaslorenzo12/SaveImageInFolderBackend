@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SaveImageToRequiredFolder.Models;
 using SaveImageToRequiredFolder.Service.Interfaces;
 
 namespace SaveImageToRequiredFolder.Controllers
@@ -16,17 +15,16 @@ namespace SaveImageToRequiredFolder.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<string>>> GetFolders()
+        public ActionResult<IReadOnlyCollection<string>> GetFolders()
         {
-            IReadOnlyCollection<Folder> folders = await folderService.ReadAllFolders();
-            IReadOnlyCollection<string> folderNames = folders.Select(folder => folder.name).ToList().AsReadOnly();
-            return Ok(folderNames);
+            IReadOnlyCollection<string> folders = folderService.ReadAllFolders();
+            return Ok(folders);
         }
 
         [HttpGet("folderExists/{folderName}")]
-        public async Task<bool> FolderExists(string folderName)
+        public bool FolderExists(string folderName)
         {
-            return await folderService.FolderExists(folderName);
+            return folderService.FolderExists(folderName);
         }
 
     }

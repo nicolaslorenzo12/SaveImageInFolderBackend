@@ -4,6 +4,6 @@ namespace SaveImageToRequiredFolder.Service.Interfaces
 {
     public interface IImageService
     {
-        Task AddImage(AddImageDto addImageDto);
+        void AddImage(AddImageDto addImageDto);
     }
 }

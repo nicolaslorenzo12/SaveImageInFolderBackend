@@ -1,5 +1,4 @@
-﻿using SaveImageToRequiredFolder.Models;
-using SaveImageToRequiredFolder.Service.Interfaces;
+﻿using SaveImageToRequiredFolder.Service.Interfaces;
 
 namespace SaveImageToRequiredFolder.Service.Implementations
 {
@@ -11,20 +10,19 @@ namespace SaveImageToRequiredFolder.Service.Implementations
         {
         }
 
-        public async Task<bool> FolderExists(string folderName)
+        public bool FolderExists(string folderName)
         {
             string folderPath = Path.Combine(baseDirectory, folderName);
             bool exists = Directory.Exists(folderPath);
-            return await Task.FromResult(exists);
+            return exists;
         }
 
-        public async Task<IReadOnlyCollection<Folder>> ReadAllFolders()
+        public IReadOnlyCollection<string> ReadAllFolders()
         {
-            var folderNames = Directory.GetDirectories(baseDirectory)
-                                        .Select(dir => Path.GetFileName(dir))
-                                        .ToList()
+            return Directory.GetDirectories(baseDirectory)
+                                .Select(dir => Path.GetFileName(dir))
+                                    .ToList()
                                         .AsReadOnly();
-            return (IReadOnlyCollection<Folder>)await Task.FromResult<IReadOnlyCollection<string>>(folderNames);
         }
     }
 }

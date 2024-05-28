@@ -16,9 +16,9 @@ namespace SaveImageToRequiredFolder.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddImage([FromBody] AddImageDto addImageDto)
+        public ActionResult AddImage([FromBody] AddImageDto addImageDto)
         {
-            await imageService.AddImage(addImageDto);
+            imageService.AddImage(addImageDto);
             return Ok();
         }
     }
