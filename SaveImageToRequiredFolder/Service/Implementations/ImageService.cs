@@ -10,7 +10,6 @@ namespace SaveImageToRequiredFolder.Service.Implementations
 
         public void AddImage(AddImageDto addImageDto)
         {
-            string fileName = null;
             byte[] imageData = Convert.FromBase64String(addImageDto.imageData);
             string baseDirectory = @"C:\mypictures";
 
@@ -18,7 +17,7 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             string folderPath = Path.Combine(baseDirectory, addImageDto.folderName);
 
             CheckIfDirectoryExistsAndIfNotCreateIt(folderPath);
-            GiveProperFileNameToImage(addImageDto.folderName, folderPath ,fileName, imageData);
+            GiveProperFileNameToImage(folderPath ,imageData);
         }
 
         private void CheckIfDirectoryExistsAndIfNotCreateIt(string folderPath)
@@ -29,11 +28,11 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             }
         }
 
-        private void GiveProperFileNameToImage(string folderName,string folderPath ,string fileName,byte[] imageData)
+        private void GiveProperFileNameToImage(string folderPath ,byte[] imageData)
         {
             string[] files = Directory.GetFiles(folderPath, "picture(*).jpg");
             int maxNumber = FindAmountOfImagesInTheFolder(files);
-            fileName = $"picture({maxNumber + 1}).jpg";
+            string fileName = $"picture({maxNumber + 1}).jpg";
             string imagePath = Path.Combine(folderPath, fileName);
             File.WriteAllBytesAsync(imagePath, imageData);
         }
