@@ -1,20 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SaveImageToRequiredFolder.Data;
-using SaveImageToRequiredFolder.Dto;
-using SaveImageToRequiredFolder.Models;
+﻿using SaveImageToRequiredFolder.Dto;
 using SaveImageToRequiredFolder.Service.Interfaces;
 namespace SaveImageToRequiredFolder.Service.Implementations
 {
     public class ImageService : IImageService
     {
 
-        private readonly Context context;
-
-        public ImageService(Context context)
+        public ImageService()
         {
-            this.context = context;
         }
-
 
         public async Task AddImage(AddImageDto addImageDto)
         {
@@ -37,7 +30,7 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             }
         }
 
-        private async Task GiveProperFileNameToImage(string folderName,string folderPath ,string fileName, byte[] imageData)
+        private async Task GiveProperFileNameToImage(string folderName,string folderPath ,string fileName,byte[] imageData)
         {
             int maxNumber = 0;
 
@@ -60,49 +53,15 @@ namespace SaveImageToRequiredFolder.Service.Implementations
                 }
             }
 
-            // Set the fileName to picture(number + 1).jpg
             fileName = $"picture({maxNumber + 1}).jpg";
 
-            await SetFinalNameToImageAndPutItInFolder(folderName, folderPath ,fileName, imageData);
+            await SetFinalNameToImageAndPutItInFolder(folderPath ,fileName, imageData);
         }
 
-        private async Task SetFinalNameToImageAndPutItInFolder(string folderName, string folderPath, string fileName, byte[] imageData)
+        private async Task SetFinalNameToImageAndPutItInFolder(string folderPath, string fileName, byte[] imageData)
         {
             string imagePath = Path.Combine(folderPath, fileName);
-            await System.IO.File.WriteAllBytesAsync(imagePath, imageData);
-
-            try
-            {
-                Folder existingFolder = await context.Folders.FirstOrDefaultAsync(f => f.name == folderName);
-
-               await AddFolderIfItDoesNotExist(existingFolder, folderName);
-
-                int folderId = (int)await context.Folders.Where(f => f.name == folderName).Select(f => (int?)f.id).FirstOrDefaultAsync();
-
-                await AddFile(fileName, folderId);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                // I have to hand exceptions better
-            }
-        }
-
-        private async Task AddFolderIfItDoesNotExist(Folder existingFolder, string folderName)
-        {
-            if (existingFolder == null)
-            {
-                Folder newFolder = new Models.Folder(folderName);
-                context.Folders.Add(newFolder);
-                await context.SaveChangesAsync();
-            }           
-        }
-
-        private async Task AddFile(string fileName, int folderId)
-        {
-                var newFile = new Models.File(fileName, folderId);
-                context.Files.Add(newFile);
-                await context.SaveChangesAsync();    
+            await File.WriteAllBytesAsync(imagePath, imageData);
         }
     }
 }

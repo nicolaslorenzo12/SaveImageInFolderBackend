@@ -1,26 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SaveImageToRequiredFolder.Models
+﻿namespace SaveImageToRequiredFolder.Models
 {
-    public class Folder
+    public class Folder : FileSystemItem
     {
-        public Folder(string name)
+        public Folder(string name) : base(name)
         {
-            this.name = name;
         }
-
-        public Folder(int id, string name)
-        {
-            this.id = id;
-            this.name = name;
-        }
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
-
-        [Required]
-        public string name { get; set; }
     }
 }

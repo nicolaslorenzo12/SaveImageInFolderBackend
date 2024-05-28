@@ -1,28 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SaveImageToRequiredFolder.Data;
-using SaveImageToRequiredFolder.Models;
+﻿using SaveImageToRequiredFolder.Models;
 using SaveImageToRequiredFolder.Service.Interfaces;
 
 namespace SaveImageToRequiredFolder.Service.Implementations
 {
     public class FolderService : IFolderService
     {
+        private static readonly string baseDirectory = @"C:\mypictures";
 
-        private readonly Context context;
-
-        public FolderService(Context context)
+        public FolderService()
         {
-            this.context = context;
         }
 
         public async Task<bool> FolderExists(string folderName)
         {
-            return await context.Folders.AnyAsync(f => f.name == folderName);
+            string folderPath = Path.Combine(baseDirectory, folderName);
+            bool exists = Directory.Exists(folderPath);
+            return await Task.FromResult(exists);
         }
 
         public async Task<IReadOnlyCollection<Folder>> ReadAllFolders()
         {
-            return await context.Folders.ToListAsync();
+            var folderNames = Directory.GetDirectories(baseDirectory)
+                                        .Select(dir => Path.GetFileName(dir))
+                                        .ToList()
+                                        .AsReadOnly();
+            return (IReadOnlyCollection<Folder>)await Task.FromResult<IReadOnlyCollection<string>>(folderNames);
         }
     }
 }
