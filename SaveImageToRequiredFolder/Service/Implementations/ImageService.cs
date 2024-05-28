@@ -15,14 +15,14 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             byte[] imageData = Convert.FromBase64String(addImageDto.imageData);
             string baseDirectory = @"C:\mypictures";
 
-            await CheckIfDirectoryExistsAndIfNotCreateIt(baseDirectory);
+            CheckIfDirectoryExistsAndIfNotCreateIt(baseDirectory);
             string folderPath = Path.Combine(baseDirectory, addImageDto.folderName);
 
-            await CheckIfDirectoryExistsAndIfNotCreateIt(folderPath);
-            await GiveProperFileNameToImage(addImageDto.folderName, folderPath ,fileName, imageData);
+            CheckIfDirectoryExistsAndIfNotCreateIt(folderPath);
+            GiveProperFileNameToImage(addImageDto.folderName, folderPath ,fileName, imageData);
         }
 
-        private async Task CheckIfDirectoryExistsAndIfNotCreateIt(string folderPath)
+        private void CheckIfDirectoryExistsAndIfNotCreateIt(string folderPath)
         {
             if (!Directory.Exists(folderPath))
             {
@@ -30,15 +30,21 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             }
         }
 
-        private async Task GiveProperFileNameToImage(string folderName,string folderPath ,string fileName,byte[] imageData)
+        private void GiveProperFileNameToImage(string folderName,string folderPath ,string fileName,byte[] imageData)
+        {
+            string[] files = Directory.GetFiles(folderPath, "picture(*).jpg");
+            int maxNumber = FindAmountOfImagesInTheFolder(files);
+            fileName = $"picture({maxNumber + 1}).jpg";
+            string imagePath = Path.Combine(folderPath, fileName);
+            File.WriteAllBytesAsync(imagePath, imageData);
+        }
+
+        private int FindAmountOfImagesInTheFolder(string[] files)
         {
             int maxNumber = 0;
 
-            // Get all files in the folder
-            string[] files = Directory.GetFiles(folderPath, "picture(*).jpg");
             foreach (string file in files)
             {
-                // Extract the number from the filename
                 string fileNameWithJPg = Path.GetFileNameWithoutExtension(file);
                 if (fileNameWithJPg.StartsWith("picture(") && fileNameWithJPg.EndsWith(")"))
                 {
@@ -52,16 +58,7 @@ namespace SaveImageToRequiredFolder.Service.Implementations
                     }
                 }
             }
-
-            fileName = $"picture({maxNumber + 1}).jpg";
-
-            await SetFinalNameToImageAndPutItInFolder(folderPath ,fileName, imageData);
-        }
-
-        private async Task SetFinalNameToImageAndPutItInFolder(string folderPath, string fileName, byte[] imageData)
-        {
-            string imagePath = Path.Combine(folderPath, fileName);
-            await File.WriteAllBytesAsync(imagePath, imageData);
+            return maxNumber;
         }
     }
 }
