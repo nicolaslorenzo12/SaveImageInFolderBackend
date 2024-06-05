@@ -44,10 +44,10 @@ namespace SaveImageToRequiredFolder.Service.Implementations
 
             foreach (string file in files)
             {
-                string fileNameWithJPg = Path.GetFileNameWithoutExtension(file);
-                if (fileNameWithJPg.StartsWith("picture(") && fileNameWithJPg.EndsWith(")"))
+                string fileNameWithJpg = Path.GetFileNameWithoutExtension(file);
+                if (fileNameWithJpg.StartsWith("picture(") && fileNameWithJpg.EndsWith(")"))
                 {
-                    string numberString = fileNameWithJPg.Substring(8, fileNameWithJPg.Length - 9);
+                    string numberString = fileNameWithJpg.Substring(8, fileNameWithJpg.Length - 9);
                     if (int.TryParse(numberString, out int number))
                     {
                         if (number > maxNumber)
@@ -57,6 +57,7 @@ namespace SaveImageToRequiredFolder.Service.Implementations
                     }
                 }
             }
+
             return maxNumber;
         }
     }
