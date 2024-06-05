@@ -17,9 +17,16 @@ namespace SaveImageToRequiredFolder.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyCollection<string>> GetFolders()
         {
-            IReadOnlyCollection<string> folders = folderService.ReadAllFolders();
-            return Ok(folders);
-        }
+            try
+            {
+                IReadOnlyCollection<string> folders = folderService.ReadAllFolders();
+                return Ok(folders);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return NotFound("Base direcory does not exist yet");
+            }
+}
 
         [HttpGet("folderExists/{folderName}")]
         public bool FolderExists(string folderName)

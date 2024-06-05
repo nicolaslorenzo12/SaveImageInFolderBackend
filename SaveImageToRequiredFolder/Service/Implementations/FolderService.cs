@@ -1,4 +1,5 @@
-﻿using SaveImageToRequiredFolder.Service.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using SaveImageToRequiredFolder.Service.Interfaces;
 
 namespace SaveImageToRequiredFolder.Service.Implementations
 {
@@ -19,10 +20,18 @@ namespace SaveImageToRequiredFolder.Service.Implementations
 
         public IReadOnlyCollection<string> ReadAllFolders()
         {
-            return Directory.GetDirectories(baseDirectory)
-                                .Select(dir => Path.GetFileName(dir))
-                                    .ToList()
-                                        .AsReadOnly();
+            try
+            {
+                return Directory.GetDirectories(baseDirectory)
+                                    .Select(dir => Path.GetFileName(dir))
+                                        .ToList()
+                                            .AsReadOnly();
         }
+            catch(DirectoryNotFoundException)
+            {
+                Console.WriteLine("Base directory does not exist yet");
+                throw;
+            }
+}
     }
 }

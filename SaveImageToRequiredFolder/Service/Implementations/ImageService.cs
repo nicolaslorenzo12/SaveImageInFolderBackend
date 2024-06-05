@@ -10,7 +10,8 @@ namespace SaveImageToRequiredFolder.Service.Implementations
 
         public void AddImage(AddImageDto addImageDto)
         {
-            byte[] imageData = Convert.FromBase64String(addImageDto.imageData);
+            string imageCode = addImageDto.imageData.Substring(addImageDto.imageData.IndexOf(',') + 1);
+            byte[] imageData = Convert.FromBase64String(imageCode);
             string baseDirectory = @"C:\mypictures";
 
             CheckIfDirectoryExistsAndIfNotCreateIt(baseDirectory);
