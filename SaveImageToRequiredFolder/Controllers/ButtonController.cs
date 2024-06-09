@@ -2,7 +2,7 @@
 using System;
 using HidLibrary;
 
-namespace SaveImageToRequiredFolder.Controllers
+namespace SaveImageToRequiredFolder.Controllers2
 {
     [Route("api/[controller]")]
     [ApiController]
