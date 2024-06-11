@@ -28,6 +28,7 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+//builder.Services.AddProblemDetails();   
 
 var app = builder.Build();
 
