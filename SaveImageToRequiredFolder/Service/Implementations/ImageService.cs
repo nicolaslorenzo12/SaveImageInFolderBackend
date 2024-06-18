@@ -1,4 +1,5 @@
 ﻿using SaveImageToRequiredFolder.Dto;
+using SaveImageToRequiredFolder.Models;
 using SaveImageToRequiredFolder.Service.Interfaces;
 namespace SaveImageToRequiredFolder.Service.Implementations
 {
@@ -35,7 +36,7 @@ namespace SaveImageToRequiredFolder.Service.Implementations
             int maxNumber = FindAmountOfImagesInTheFolder(files);
             string fileName = $"picture({maxNumber + 1}).jpg";
             string imagePath = Path.Combine(folderPath, fileName);
-            File.WriteAllBytesAsync(imagePath, imageData);
+            System.IO.File.WriteAllBytesAsync(imagePath, imageData);
         }
 
         private int FindAmountOfImagesInTheFolder(string[] files)
@@ -60,5 +61,54 @@ namespace SaveImageToRequiredFolder.Service.Implementations
 
             return maxNumber;
         }
+
+        public IReadOnlyCollection<Image> GetLastFivePictures(string folderName)
+        {
+            string baseDirectory = @"C:\mypictures";
+            string folderPath = Path.Combine(baseDirectory, folderName);
+
+            if (!Directory.Exists(folderPath))
+            {
+                throw new DirectoryNotFoundException($"The folder {folderName} does not exist.");
+            }
+
+            string[] files = Directory.GetFiles(folderPath, "picture(*).jpg");
+
+            var sortedFiles = files
+                .Select(file => new
+                {
+                    FilePath = file,
+                    FileNumber = ExtractNumberFromFileName(Path.GetFileNameWithoutExtension(file))
+                })
+                .Where(file => file.FileNumber.HasValue)
+                .OrderByDescending(file => file.FileNumber.Value)
+                .Take(5)
+                .ToList();
+
+            List<Image> images = [];
+
+            foreach (var file in sortedFiles)
+            {
+                byte[] imageData = System.IO.File.ReadAllBytes(file.FilePath);
+                images.Add(new Image(Path.GetFileName(file.FilePath), imageData, folderName));
+            }
+
+            return images;
+        }
+
+        private int? ExtractNumberFromFileName(string fileName)
+        {
+            if (fileName.StartsWith("picture(") && fileName.EndsWith(")"))
+            {
+                string numberString = fileName.Substring(8, fileName.Length - 9);
+                if (int.TryParse(numberString, out int number))
+                {
+                    return number;
+                }
+            }
+
+            return null;
+        }
+
     }
 }
